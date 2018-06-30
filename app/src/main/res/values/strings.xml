@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GPT Printer</string>
+
+    <string name="text_record">Print Text Record</string>
+    <string name="image_record">Print Image Record</string>
+    <string name="printsuccess">Success</string>
+    <string name="printfailed">Failure</string>
+</resources>
