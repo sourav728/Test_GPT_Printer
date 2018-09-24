@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -27,6 +29,8 @@ import com.lvrenyang.io.Canvas;
 import com.lvrenyang.io.Pos;
 import com.transvision.test_gpt_printer.service.BluetoothService;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -211,6 +215,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Typeface tfNumber = Typeface.createFromAsset(getAssets(), "fonts/DroidSansMono.ttf");
             canvas.CanvasBegin(576, nPrintHeight);
             canvas.SetPrintDirection(0);
+
+            Bitmap image = getImageFromAssetsFile("gpt_image.png");
+            canvas.DrawBitmap(image, 0, yaxis, 0);
 
             int maxlength = 38;
             int small_font_height = 20;
@@ -430,5 +437,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         return null;
+    }
+
+    public Bitmap getImageFromAssetsFile(String fileName) {
+        Bitmap image = null;
+        AssetManager am = getResources().getAssets();
+        try {
+            InputStream is = am.open(fileName);
+            image = BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 }
