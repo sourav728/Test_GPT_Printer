@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String splchar = "";
     private Bitmap barcode;
     private ArrayList<String> res;
-
+    private String rep_address_1="",rep_address_2="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,13 +72,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         res = new ArrayList<>();
 
-        String address = "#3B-11, Ist Floor, 3rd Block, VITC Export Bhavan, KIADB, Sub-Registrar, Office Building, 3rd Main,14th Cross, " +
-                "4th, 2nd Stage, Peenya Industrial Area Phase IV, Peenya, Bengaluru, Karnataka 560058";
+        String address = "#3B-11, Ist Floor, 3rd Block, VITC Export Bhavan, KIADB, Sub-Registrar, Office Building, 3rd Main,14th Cross";
         String regex = "a-z~@#$%^&*:;<>.,/}{+";
         if (address.substring(0, 1).matches("[" + regex + "]+")) {
             splchar = address.substring(0, 1);
         }
-        splitString(address);
+        splitString(address,30,res);
+        if (res.size()>0)
+        {
+            rep_address_1 = "  "+res.get(0);
+            if (res.size() > 1) {
+                rep_address_2 = "  "+res.get(1);
+            }
+        }
         barcode = getBitmap("1110101030468" + "123456.00");
 
         new Handler().postDelayed(new Runnable() {
@@ -96,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.print_image_btn:
-                int GPT_printer_height = 1500;
+                int GPT_printer_height = 1800;
                 es.submit(new TaskPrint(mCanvas, GPT_printer_height));
                 break;
         }
@@ -215,181 +221,96 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Typeface tfNumber = Typeface.createFromAsset(getAssets(), "fonts/DroidSansMono.ttf");
             canvas.CanvasBegin(576, nPrintHeight);
             canvas.SetPrintDirection(0);
-
-            printtext(canvas, "ಮಾ.ಓ.ಸಂಕೇತ/Mtr.Rdr.Code", "54003905", tfNumber, 20, 4);
-            printtext(canvas, "ಉಪ ವಿಭಾಗ/Sub Division", "54003801", tfNumber, 20, 4);
-            printtext(canvas, "ಖಾತೆ ಸಂಖ್ಯೆ/Account ID", "9913164549", tfNumber, 20, 4);
-            printtext_center(canvas, "ಹೆಸರು ಮತ್ತು ವಿಳಾಸ/Name and Address", tfNumber, 20, 4);
-            printtext(canvas, "ಜಕಾತಿ/Tariff", "5LT6B-M", tfNumber, 20, 4);
-            printtext(canvas, "ಮಂ.ಪ್ರಮಾಣ/Sanct Load", "HP: 3  KW 2", tfNumber, 20, 4);
-            printtext(canvas, "ಬಿಲ್ಲಿಂಗ್ ಅವಧಿ/Billing Period", "01/07/2018" + "-" + "01/08/2018", tfNumber, 20, 4);
-            printtext(canvas, "ರೀಡಿಂಗ ದಿನಾಂಕ/Reading Date", "01/08/2018", tfNumber, 20, 4);
-            printtext(canvas, "ಬಿಲ್ ಸಂಖ್ಯೆ/Bill No", "991316454908201801", tfNumber, 20, 4);
-            printtext(canvas, "ಮೀಟರ್ ಸಂಖ್ಯೆ/Meter SlNo", "500010281098" + 0, tfNumber, 20, 4);
-            printtext(canvas, "ಇಂದಿನ ಮಾಪನ/Pres Rdg", "658 / NOR", tfNumber, 20, 4);
-            printtext(canvas, "ಹಿಂದಿನ ಮಾಪನ/Prev Rdg", "600 / NOR", tfNumber, 20, 4);
-            printtext(canvas, "ಮಾಪನ ಸ್ಥಿರಾಂಕ/Constant", rightspacing("1", 5), tfNumber, 20, 4);
-            printtext(canvas, "ಬಳಕೆ/Consumption", rightspacing("58", 5), tfNumber, 20, 4);
-            printtext(canvas, "ಸರಾಸರಿ/Average", rightspacing("51", 5), tfNumber, 20, 4);
-            printtext(canvas, "ದಾಖಲಿತ ಬೇಡಿಕೆ/Recorded MD", rightspacing("10", 5), tfNumber, 20, 4);
-
-            printtext(canvas, "ಪವರ ಫ್ಯಾಕ್ಟರ/Power Factor", rightspacing("0.85", 14), tfNumber, 20, 4);
-          /*  printtext_center(canvas, "ನಿಗದಿತ ಶುಲ್ಕ/Fixed Charges",  tfNumber, 20, 4);
-
-           // printtext(canvas, "3.0",  "x" + String.format("%8s", rightspacing("80.00", 7)) + String.format("%18s", rightspacing(" 240.00", 12)), tfNumber, 24, 6);
-
-            printtext_center(canvas, "ವಿದ್ಯುತ್ ಶುಲ್ಕ/Energy Charges" , tfNumber, 20, 6);
-            printtext(canvas, "58.0",  "x" + "6.05" + "350.90", tfNumber, 20, 6);*/
-
-
-            printtext(canvas, "ಎಫ್.ಎ.ಸಿ/FAC", rightspacing("1258.0", 14), tfNumber, 20, 6);
-            printtext(canvas, "ರಿಯಾಯಿತಿ/Rebates/TOD", rightspacing("10.00", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಪಿ.ಎಫ್ ದಂಡ/PF Penalty", rightspacing("200.00", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಎಂ.ಡಿ.ದಂಡ/MD Penalty", rightspacing("0.00", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಬಡ್ಡಿ/Interest @1%", rightspacing("3.64", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಇತರೆ/Others", rightspacing("0.00", 14), tfNumber, 20, 6);
-            printtext(canvas, "ತೆರಿಗೆ/Tax @9%", rightspacing("25.47", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಒಟ್ಟು ಬಿಲ್ ಮೊತ್ತ/Cur Bill Amt", rightspacing("620.01", 14), tfNumber, 20, 6);
-
-            printtext(canvas, "ಬಾಕಿ/Arrears", rightspacing("1258.0", 14), tfNumber, 20, 6);
-            printtext(canvas, "DL ಬಿಲ್/DL Bill", rightspacing("10.00", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಜಮಾ/Credits & Adj", rightspacing("320.01", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಐ.ಒ.ಡಿ/IOD", rightspacing("520.01", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಸರ್ಕಾರದ ಸಹಾಯಧನ/GOK Subsidy", rightspacing("3.64", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಪಾವತಿಸಬೇಕಾದ ಮೊತ್ತ/Net Amt Due", rightspacing("0.00", 14), tfNumber, 20, 6);
-            printtext(canvas, "ತೆರಿಗೆ/Tax @9%", rightspacing("25.47", 14), tfNumber, 20, 6);
-
-            //printtext(canvas, "ಒಟ್ಟು ಬಿಲ್ ಮೊತ್ತ/Cur Bill Amt", rightspacing("1258.0", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಬಾಕಿ/Arrears", rightspacing("10.00", 14), tfNumber, 20, 6);
-            printtext(canvas, "DL ಬಿಲ್/DL Bill", rightspacing("320.01", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಜಮಾ/Credits & Adj", rightspacing("520.01", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಐ.ಒ.ಡಿ/IOD", rightspacing("3.64", 14), tfNumber, 20, 6);
-           // printtext(canvas, "ಪಸರ್ಕಾರದ ಸಹಾಯಧನ/GOK Subsidy", rightspacing("0.00", 14), tfNumber, 20, 6);
-            //printtext(canvas, "ಪಾವತಿಸಬೇಕಾದ ಮೊತ್ತ/Net Amt Due", rightspacing("2500.47", 14), tfNumber, 20, 6);
-
-           // printtext(canvas, "ಪಾವತಿ ಕೊನೆ ದಿನಾಂಕ/Due Date", rightspacing("15/08/2018", 14), tfNumber, 20, 6);
-            printtext(canvas, "ಬಾಕಿ/Arrears", rightspacing("10.00", 14), tfNumber, 20, 6);
-            //printtext(canvas, "ಬಿಲ್ ದಿನಾಂಕ/Billed On", rightspacing(currentDateandTime(), 14), tfNumber, 20, 6);
-            //printtext(canvas, "ಮಾ.ಓ.ಸಂಕೇತ/Mtr.Rdr.Code", rightspacing("54003818 Kenchappa", 14), tfNumber, 20, 6);
-
-            canvas.DrawBitmap(barcode, 0, yaxis, 0);
-            canvas.CanvasEnd();
-            canvas.CanvasPrint(1, 0);
-            bPrintResult = canvas.GetIO().IsOpened();
-            return bPrintResult;
-
-        }
-
-        private Bitmap Print_unicode(String text) {
-            Bitmap myBitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_4444);
-            android.graphics.Canvas myCanvas = new android.graphics.Canvas(myBitmap);
-            Paint paint = new Paint();
-            Typeface clock = Typeface.createFromAsset(getAssets(), "DroidSansMono.ttf");
-           /* paint.setAntiAlias(true);
-            paint.setSubpixelText(true);*/
-            paint.setTypeface(clock);
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.BLACK);
-            paint.setTextSize(15);
-            paint.setTextAlign(Paint.Align.CENTER);
-            myCanvas.drawText(text, 0, 180, paint);
-            return myBitmap;
-        }
-
-        /* private boolean PrintTicket(Canvas canvas, int nPrintHeight) {
-            boolean bPrintResult;
-            Typeface tfNumber = Typeface.createFromAsset(getAssets(), "fonts/DroidSansMono.ttf");
-            canvas.CanvasBegin(576, nPrintHeight);
-            canvas.SetPrintDirection(0);
-
             int maxlength = 38;
-            int small_font_height = 20;
-
             printboldtext(canvas, space("HUBLI ELECTRICITY SUPPLY COMPANY LTD", maxlength), tfNumber, 25);
-            //printboldtext(canvas, space("", maxlength), tfNumber, 24);
-            printtext(canvas, "ಉಪ ವಿಭಾಗ/Sub Division",  "540038", tfNumber, 22, 6);
-            //printtext(canvas, "ಆರ್.ಆರ್.ಸಂಖ್ಯೆ/RRNO", "BSTL43242", tfNumber, 22, 6);
-            printtext(canvas, "ಖಾತೆ ಸಂಖ್ಯೆ/Account ID",  "9913164549", tfNumber, 22, 6);
-            printtext1(canvas,  "ಹೆಸರು ಮತ್ತು ವಿಳಾಸ/Name and Address", tfNumber, 22, 6);
+            printtext_center(canvas, "", tfNumber, 20, 4);
 
-            printtext1(canvas, "THE COMMISSIONER CITY CORPORATION BELGAVI",  tfNumber, 24, 6);
-            printtext1(canvas, "DHANSHREE GARDEN FOURTH CROSS BHAGYANAGAR", tfNumber, 24, 6);
+            printtext(canvas, "ಉಪ ವಿಭಾಗ/Sub Division", centeralign2(":", 0), "540038", tfNumber, 20, 4);
+            printtext(canvas, "ಆರ್.ಆರ್.ಸಂಖ್ಯೆ/RRNO", centeralign2(":", 0), "IP57.228", tfNumber, 20, 4);
+            printtext(canvas, "ಖಾತೆ ಸಂಖ್ಯೆ/Account ID", centeralign2(":", 0), "9913164549", tfNumber, 20, 4);
+
+            printtext_center(canvas, centeralign2("ಹೆಸರು ಮತ್ತು ವಿಳಾಸ/Name and Address", 10), tfNumber, 20, 6);
+            printtext_center(canvas, centeralign2(rep_address_1, 10), tfNumber, 20, 6);
+            printtext_center(canvas, centeralign2(rep_address_2, 10), tfNumber, 20, 6);
+            printtext(canvas, "ಜಕಾತಿ/Tariff", centeralign2(":", 0), "5LT6B-M", tfNumber, 20, 4);
+            printtext(canvas, "ಮಂ.ಪ್ರಮಾಣ/Sanct Load", centeralign2(":", 0), "HP: 3  KW 2", tfNumber, 20, 4);
+            printtext(canvas, "Billing Period", centeralign2(":", 0), "01/07/2018" + "-" + "01/08/2018", tfNumber, 20, 4);
+            printtext(canvas, "ರೀಡಿಂಗ ದಿನಾಂಕ/Reading Date", centeralign2(":", 0), "01/08/2018", tfNumber, 20, 4);
+            printtext(canvas, "ಬಿಲ್ ಸಂಖ್ಯೆ/Bill No", centeralign2(":", 0), "991316454908201801", tfNumber, 20, 4);
+            printtext(canvas, "ಮೀಟರ್ ಸಂಖ್ಯೆ/Meter SlNo", centeralign2(":", 0), "500010281098" + 0, tfNumber, 20, 4);
+            printtext(canvas, "ಇಂದಿನ ಮಾಪನ/Pres Rdg", centeralign2(":", 0), "658 / NOR", tfNumber, 20, 4);
+            printtext(canvas, "ಹಿಂದಿನ ಮಾಪನ/Prev Rdg", centeralign2(":", 0), "600 / NOR", tfNumber, 20, 4);
+            printtext(canvas, "ಮಾಪನ ಸ್ಥಿರಾಂಕ/Constant", centeralign2(":", 0), rightspacing("1", 5), tfNumber, 20, 4);
+            printtext(canvas, "ಬಳಕೆ/Consumption", centeralign2(":", 0), rightspacing("58", 5), tfNumber, 20, 4);
+            printtext(canvas, "ಸರಾಸರಿ/Average", centeralign2(":", 0), rightspacing("51", 5), tfNumber, 20, 4);
+            printtext(canvas, "ದಾಖಲಿತ ಬೇಡಿಕೆ/Recorded MD", centeralign2(":", 0), rightspacing("10", 5), tfNumber, 20, 4);
+            printtext(canvas, "ಪವರ ಫ್ಯಾಕ್ಟರ/Power Factor", centeralign2(":", 0), rightspacing("0.85", 5), tfNumber, 20, 4);
+            printtext_center(canvas, "", tfNumber, 20, 4);
+
+            printtext_center(canvas, centeralign2("ನಿಗದಿತ ಶುಲ್ಕ/Fixed Charges", 10), tfNumber, 20, 6);
+            printtext_center(canvas, "", tfNumber, 20, 4);
+            printtext_center(canvas, centeralign2("3.0 x 60.00", 10) + rightspacing("180.00", 22), tfNumber, 20, 6);
+            printtext_center(canvas, centeralign2("2.0 x 80.00", 10) + rightspacing("160.00", 22), tfNumber, 20, 6);
+            printtext_center(canvas, "", tfNumber, 20, 4);
+
+            printtext_center(canvas, centeralign2("ವಿದ್ಯುತ್ ಶುಲ್ಕ/Energy Charges", 10), tfNumber, 20, 6);
+            printtext_center(canvas, "", tfNumber, 20, 4);
+            printtext_center(canvas, centeralign2("2.0 x 40.00", 10) + rightspacing("80.00", 22), tfNumber, 20, 6);
+            printtext_center(canvas, centeralign2("2.0 x 50.00", 10) + rightspacing("100.00", 22), tfNumber, 20, 6);
+            printtext_center(canvas, "", tfNumber, 20, 4);
+
+            printtext2(canvas, "ಎಫ್.ಎ.ಸಿ/FAC", centeralign2(":", 0), rightspacing("1258.00", 14), tfNumber, 20, 6);
+            printtext2(canvas, "ರಿಯಾಯಿತಿ/Rebates/TOD", centeralign2(":", 0), rightspacing("10.00", 14), tfNumber, 20, 6);
+            printtext2(canvas, "ಪಿ.ಎಫ್ ದಂಡ/PF Penalty", centeralign2(":", 0), rightspacing("200.00", 14), tfNumber, 20, 6);
+            printtext2(canvas, "ಎಂ.ಡಿ.ದಂಡ/MD Penalty", centeralign2(":", 0), rightspacing("0.00", 14), tfNumber, 20, 6);
+            printtext2(canvas, "ಬಡ್ಡಿ/Interest @1%", centeralign2(":", 0), rightspacing("3.64", 14), tfNumber, 20, 6);
+            printtext2(canvas, "ಇತರೆ/Others", centeralign2(":", 0), rightspacing("0.00", 14), tfNumber, 20, 6);
+            printtext2(canvas, "ತೆರಿಗೆ/Tax @9%", centeralign2(":", 0), rightspacing("25.47", 14), tfNumber, 20, 6);
+            printtext2(canvas, "ಒಟ್ಟು ಬಿಲ್ ಮೊತ್ತ/Cur Bill Amt", centeralign2(":", 0), rightspacing("620.01", 14), tfNumber, 20, 6);
 
 
-            printtext(canvas, "ಜಕಾತಿ/Tariff", "5LT6B-M", tfNumber, 22, 6);
-            printtext(canvas, "ಮಂ.ಪ್ರಮಾಣ/Sanct Load", " HP:" + rightspacing("0", 6) +
-                    String.format("%1s", " ") + "KW:" + rightspacing("3", 5), tfNumber, 22, 6);
-            printtext(canvas, "ಬಿಲ್ಲಿಂಗ್ ಅವಧಿ/Billing Period", "01/07/2018" + "-" + "01/08/2018", tfNumber, 20, 4);
-            printtext(canvas, "ರೀಡಿಂಗ ದಿನಾಂಕ/Reading Date", "01/08/2018", tfNumber, 22, 6);
-            printtext(canvas, "ಬಿಲ್ ಸಂಖ್ಯೆ/Bill No",   "991316454908201801", tfNumber, 22, 6);
-            printtext(canvas, "ಮೀಟರ್ ಸಂಖ್ಯೆ/Meter SlNo",  "500010281098" + 0, tfNumber, 22, 6);
-            printtext(canvas, "ಇಂದಿನ ಮಾಪನ/Pres Rdg",  "658 / NOR", tfNumber, 22, 6);
-            printtext(canvas, "ಹಿಂದಿನ ಮಾಪನ/Prev Rdg",  "600 / NOR", tfNumber, 22, 6);
-            printtext(canvas, "ಮಾಪನ ಸ್ಥಿರಾಂಕ/Constant",  "1", tfNumber, 22, 6);
-            printtext(canvas, "ಬಳಕೆ/Consumption",  "58", tfNumber, 22, 6);
-            printtext(canvas, "ಸರಾಸರಿ/Average", "51", tfNumber, 22, 6);
-            printtext(canvas, "ದಾಖಲಿತ ಬೇಡಿಕೆ/Recorded MD",  "1", tfNumber, 24, 6);
-            printtext(canvas, "ಪವರ ಫ್ಯಾಕ್ಟರ/Power Factor",  "0.85", tfNumber, 24, 6);
-            printboldtext(canvas, space("", maxlength), tfNumber, 20);
-            printtext1(canvas, "ನಿಗದಿತ ಶುಲ್ಕ/Fixed Charges",  tfNumber, 24, 6);
+            printtext2(canvas, "ಬಾಕಿ/Arrears", centeralign2(":", 0), rightspacing("1258.00", 14), tfNumber, 20, 6);
+            printtext2(canvas, "ಜಮಾ/Credits & Adj", centeralign2(":", 0), rightspacing("320.01", 14), tfNumber, 20, 6);
+            printtext2(canvas, "ಐ.ಒ.ಡಿ/IOD", centeralign2(":", 0), rightspacing("520.01", 14), tfNumber, 20, 6);
+            printtext2(canvas, "ಸರ್ಕಾರದ ಸಹಾಯಧನ/GOK Subsidy", centeralign2(":", 0), rightspacing("3.64", 14), tfNumber, 20, 6);
+            printboldtext1(canvas, "Net Amt Due", centeralign2(":", 0), rightspacing("978950.00", 11), tfNumber, 25, 6);
 
-            printtext(canvas, "3.0",  "x" + String.format("%8s", rightspacing("80.00", 7)) + String.format("%18s", rightspacing("     240.00", 12)), tfNumber, 24, 6);
-           // printtext(canvas, String.format("%9s", rightspacing("10.0", 8)) + " " + "x" + String.format("%8s", rightspacing("50.00", 7)) + String.format("%18s", rightspacing("500.00", 12)), tfNumber, 24, 6);
-            printboldtext(canvas, space("", maxlength), tfNumber, 20);
-            printtext(canvas, centeralign("ವಿದ್ಯುತ್ ಶುಲ್ಕ/Energy Charges", 38), tfNumber, 24, 6);
-            printtext(canvas, String.format("%9s", rightspacing("58.0", 8)) + " " + "x" + String.format("%8s", rightspacing("6.05", 7)) + String.format("%18s", rightspacing("     350.90", 12)), tfNumber, 24, 6);
 
-            printtext(canvas, String.format("%9s", rightspacing("200.0", 8)) + " " + "x" + String.format("%8s", rightspacing("10.00", 7)) + String.format("%18s", rightspacing("2000.00", 12)), tfNumber, 24, 6);
-            printtext(canvas, String.format("%9s", rightspacing("2000.0", 8)) + " " + "x" + String.format("%8s", rightspacing("10.00", 7)) + String.format("%18s", rightspacing("20000.00", 12)), tfNumber, 24, 6);
-            printtext(canvas, String.format("%9s", rightspacing("20.0", 8)) + " " + "x" + String.format("%8s", rightspacing("100.00", 7)) + String.format("%18s", rightspacing("2000.00", 12)), tfNumber, 24, 6);
-           // printboldtext(canvas, space("", maxlength), tfNumber, 20);
-            printtext(canvas, space("ಎಫ್.ಎ.ಸಿ/FAC", 10) + ":" + " " + String.format("%10s", rightspacing("58.0", 7)) + " " + "x" + String.format
-                    ("%7s", rightspacing("0.00", 7)) + String.format("%6s", rightspacing("0.00", 6)), tfNumber, 22, 6);
-            printtext(canvas, space("ರಿಯಾಯಿತಿ/Rebates/TOD", 10) + "(-):" + " " + String.format("%10s", rightspacing("           0.00", 10)), tfNumber, 22, 6);
-            printtext(canvas, space("ಪಿ.ಎಫ್ ದಂಡ/PF Penalty", 10) + ":" + " " + String.format("%10s", rightspacing("             0.00", 10)), tfNumber, 22, 6);
-            printtext(canvas, space("ಎಂ.ಡಿ.ದಂಡ/MD Penalty", 10) + ":" + " " + String.format("%10s", rightspacing("              0.00", 10)), tfNumber, 22, 6);
-            printtext(canvas, space("ಬಡ್ಡಿ/Interest @1%", 10) + ":" + " " + String.format("%10s", rightspacing("                  3.64", 10)), tfNumber, 22, 6);
-            printtext(canvas, space("ಇತರೆ/Others", 10) + ":" + " " + String.format("%10s", rightspacing("                       0.00", 10)), tfNumber, 22, 6);
-            printtext(canvas, space("ತೆರಿಗೆ/Tax @9%", 10) + ":" + " " + String.format("%10s", rightspacing("                      25.47", 10)), tfNumber, 22, 6);
-            printtext(canvas, space("ಒಟ್ಟು ಬಿಲ್ ಮೊತ್ತ/Cur Bill Amt", 10) + ":" + " " + String.format("%10s", rightspacing("        620.01", 10)), tfNumber, 22, 6);
-            printtext(canvas, space("ಬಾಕಿ/Arrears", 10) + ":" + " " + String.format("%10s", rightspacing("                       1117.00", 10)), tfNumber, 22, 6);
-            printtext(canvas, space("DL ಬಿಲ್/DL Bill", 10) + "(-):" + " " + String.format("%10s", rightspacing("                 0.00", 10)), tfNumber, 22, 6);
-
-            printtext(canvas, space("ಜಮಾ/Credits & Adj", 10) + ":" + " " + String.format("%10s", rightspacing("               -312.00", 10)), tfNumber, 22, 6);
-           // printtext(canvas, space("ಐ.ಒ.ಡಿ/IOD", 10) + ":" + " " + String.format("%10s", rightspacing("1000.00", 10)), tfNumber, 22, 6);
-            printtext(canvas, space("ಸರ್ಕಾರದ ಸಹಾಯಧನ/GOK Subsidy", 10) + "(-):" + " " + String.format("%6s", rightspacing("0.00", 10)), tfNumber, 22, 6);
-            printboldtext(canvas, space("ಪಾವತಿಸಬೇಕಾದ ಮೊತ್ತ/Net Amt Due", 10) + ":" + " " + String.format("%6s", rightspacing("1425.00", 10)), tfNumber, 24);
-            printtext(canvas, space("ಪಾವತಿ ಕೊನೆ ದಿನಾಂಕ/Due Date", 10) + ":" + " " + String.format("%10s", rightspacing("15/08/2018", 10)), tfNumber, 22, 6);
-            printtext(canvas, space("ಬಿಲ್ ದಿನಾಂಕ/Billed On", 10) + ":" + " " + String.format("%10s", rightspacing(currentDateandTime(), 10)), tfNumber, 22, 6);
-            printboldtext(canvas, space("", maxlength), tfNumber, 20);
-            printtext(canvas, space("ಮಾ.ಓ.ಸಂಕೇತ/Mtr.Rdr.Code", 12) + ":" + " " + "54003818 Kenchappa Betageri", tfNumber, 24, 6);
+            printtext2(canvas, "ಪಾವತಿ ಕೊನೆ ದಿನಾಂಕ/Due Date", centeralign2(":", 0), space1("15/08/2018", 5), tfNumber, 20, 6);
+            printtext2(canvas, "ಬಿಲ್ ದಿನಾಂಕ/Billed On", centeralign2(":", 0), space3(currentDateandTime(), 3), tfNumber, 20, 6);
+            printtext2(canvas, "ಮಾ.ಓ.ಸಂಕೇತ/Mtr.Rdr.Code", centeralign2(":", 0), space3("54003818", 4), tfNumber, 20, 6);
 
             canvas.DrawBitmap(barcode, 0, yaxis, 0);
             canvas.CanvasEnd();
             canvas.CanvasPrint(1, 0);
-
             bPrintResult = canvas.GetIO().IsOpened();
             return bPrintResult;
-        }*/
 
-        private void printtext(Canvas canvas, String text, String text1, Typeface tfNumber, float textsize, float axis) {
+        }
+
+
+        private void printtext(Canvas canvas, String text, String text1, String text2, Typeface tfNumber, float textsize, float axis) {
             yaxis++;
             canvas.DrawText(text, 0, yaxis, 0, tfNumber, textsize, Canvas.DIRECTION_LEFT_TO_RIGHT);
-            canvas.DrawText(text1 + "\r\n", 350, yaxis, 0, tfNumber, textsize, Canvas.DIRECTION_LEFT_TO_RIGHT);
+            canvas.DrawText(text1, 310, yaxis, 0, tfNumber, textsize, Canvas.DIRECTION_LEFT_TO_RIGHT);
+            canvas.DrawText(text2 + "\r\n", 325, yaxis, 0, tfNumber, textsize, Canvas.DIRECTION_LEFT_TO_RIGHT);
             if (textsize == 20) {
                 yaxis = yaxis + textsize + 8;
             } else yaxis = yaxis + textsize + 6;
             yaxis = yaxis + axis;
         }
 
-        private void printtext1(Canvas canvas, String text, Typeface tfNumber, float textsize, float axis) {
+        private void printtext2(Canvas canvas, String text, String text2, String text3, Typeface tfNumber, float textsize, float axis) {
             yaxis++;
-            canvas.DrawText(text + "\r\n", 0, yaxis, 0, tfNumber, textsize, Canvas.DIRECTION_LEFT_TO_RIGHT);
+            canvas.DrawText(text, 0, yaxis, 0, tfNumber, textsize, Canvas.DIRECTION_LEFT_TO_RIGHT);
+            canvas.DrawText(text2, 310, yaxis, 0, tfNumber, textsize, Canvas.DIRECTION_LEFT_TO_RIGHT);
+            canvas.DrawText(text3 + "\r\n", 350, yaxis, 0, tfNumber, textsize, Canvas.DIRECTION_LEFT_TO_RIGHT);
             if (textsize == 20) {
                 yaxis = yaxis + textsize + 8;
             } else yaxis = yaxis + textsize + 6;
             yaxis = yaxis + axis;
         }
+
 
         private void printtext_center(Canvas canvas, String text, Typeface tfNumber, float textsize, float axis) {
             yaxis++;
@@ -407,6 +328,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 yaxis = yaxis + textsize + 8;
             } else yaxis = yaxis + textsize + 6;
             yaxis = yaxis + (float) 6;
+        }
+
+        private void printboldtext1(Canvas canvas, String text, String text1, String text2, Typeface tfNumber, float textsize, float axis) {
+            yaxis++;
+            canvas.DrawText(text, 0, yaxis, 0, tfNumber, textsize, Canvas.FONTSTYLE_BOLD);
+            canvas.DrawText(text1, 0, yaxis, 0, tfNumber, textsize, Canvas.FONTSTYLE_BOLD);
+            canvas.DrawText(text2 + "\r\n", 350, yaxis, 0, tfNumber, textsize, Canvas.FONTSTYLE_BOLD);
+            if (textsize == 20) {
+                yaxis = yaxis + textsize + 8;
+            } else yaxis = yaxis + textsize + 6;
+            yaxis = yaxis + axis;
         }
 
         private String rightspacing(String s1, int len) {
@@ -439,8 +371,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int count = text.length();
             int value = width - count;
             int append = (value / 2);
-            return space1(" ", append) + text;
+            //return space1(" ", append) + text;
+            return space1(String.format("%s", ""), append) + text;
         }
+
         private String space(String s, int length) {
             int temp;
             StringBuilder spaces = new StringBuilder();
@@ -461,6 +395,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return (s + spaces);
         }
 
+        private String space3(String s, int length) {
+            StringBuilder spaces = new StringBuilder();
+            spaces.insert(0, String.format("%" + length + "s", ""));
+            return (s + spaces);
+        }
+
         private String currentDateandTime() {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
             return sdf.format(new Date());
@@ -468,12 +408,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void splitString(String msg) {
-        res.clear();
-        Pattern p = Pattern.compile("\\b.{0," + (47 - 1) + "}\\b\\W?");
+    public void splitString(String msg, int lineSize, ArrayList<String> arrayList) {
+        arrayList.clear();
+        Pattern p = Pattern.compile("\\b.{0," + (lineSize - 1) + "}\\b\\W?");
         Matcher m = p.matcher(msg);
         while (m.find()) {
-            res.add(m.group().trim());
+            arrayList.add(m.group().trim());
         }
     }
 
