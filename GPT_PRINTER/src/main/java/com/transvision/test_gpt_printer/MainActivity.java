@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -49,10 +50,12 @@ import static com.transvision.test_gpt_printer.extra.Constants.PRINTER_MSG;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int RequestPermissionCode = 1;
 
-    Pos mPos = BluetoothService.mPos;
     Canvas mCanvas = BluetoothService.mCanvas;
     ExecutorService es = BluetoothService.es;
     Button btn_text_record, btn_image_record;
+    Pos mPos = BluetoothService.mPos;
+    public static int nPrintWidth = 570;
+    public static int nPrintHeight = 600;
 
     private float yaxis = 0;
     private float xaxis = 0;
@@ -103,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.print_image_btn:
                 int GPT_printer_height = 1800;
-                es.submit(new TaskPrint(mCanvas, GPT_printer_height));
+                es.submit(new TaskPrint(mCanvas, GPT_printer_height,mPos));
                 break;
         }
     }
@@ -194,10 +197,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private class TaskPrint implements Runnable {
         Canvas canvas;
         int print_height;
-
-        private TaskPrint(Canvas pos, int height) {
+        Pos pos2 = null;
+        private TaskPrint(Canvas pos, int height,Pos pos2) {
             this.canvas = pos;
             this.print_height = height;
+            this.pos2 = pos2;
         }
 
         @Override
@@ -222,8 +226,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             canvas.CanvasBegin(576, nPrintHeight);
             canvas.SetPrintDirection(0);
             int maxlength = 38;
-            printboldtext(canvas, space("HUBLI ELECTRICITY SUPPLY COMPANY LTD", maxlength), tfNumber, 25);
-            printtext_center(canvas, "", tfNumber, 20, 4);
+            /*printboldtext(canvas, space("HUBLI ELECTRICITY SUPPLY COMPANY LTD", maxlength), tfNumber, 25);
+            printtext_center(canvas, "", tfNumber, 20, 4);*/
+            //pos2.POS_FeedLine();
+            pos2.POS_S_Align(0);
+            Bitmap bit = BitmapFactory.decodeResource(getResources(), R.drawable.img5);
+            pos2.POS_PrintPicture(bit, nPrintWidth, 0 ,0);
+
 
             printtext(canvas, "ಉಪ ವಿಭಾಗ/Sub Division", centeralign2(":", 0), "540038", tfNumber, 20, 4);
             printtext(canvas, "ಆರ್.ಆರ್.ಸಂಖ್ಯೆ/RRNO", centeralign2(":", 0), "IP57.228", tfNumber, 20, 4);
@@ -499,4 +508,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return null;
     }
+
+
 }
